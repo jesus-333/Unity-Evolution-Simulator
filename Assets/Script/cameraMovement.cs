@@ -18,14 +18,31 @@ public class cameraMovement : MonoBehaviour
     void Update()
     {
 
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Zoom
         if(camera.orthographic){
             camera.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * scroll_speed;
         } else {
-            camera.fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * scroll_speed;
+            if(camera.fieldOfView >= 1) { camera.fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * scroll_speed; }
+            else { camera.fieldOfView = 1f; }
         }
 
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // Move
+        // if(Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)){
+        //     camera.transform.position += new Vector3(0, 0, 1f);
+        // } else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)) {
+        //     camera.transform.position += new Vector3(0, 0, -1f);
+        // } else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) {
+        //     camera.transform.position += new Vector3(-1f, 0, 0);
+        // } else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
+        //     camera.transform.position += new Vector3(+1f, 0, 0);
+        // }
+        Vector3 camera_translation = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0.0f) * camera.fieldOfView / 60;
+        camera.transform.Translate(camera_translation);
 
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // Draw safe zone
         if(Input.GetMouseButtonDown(0)){
             print(Input.mousePosition);
             print(camera.ViewportToWorldPoint(Input.mousePosition));

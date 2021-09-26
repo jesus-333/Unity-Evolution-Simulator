@@ -12,12 +12,12 @@ public class Zone : MonoBehaviour
 
     void Start()
     {
-        createField(field_side);
+        createGrassField(field_side);
 
         drawSafeZone(start_position, end_position);
     }
 
-    void createField(int field_side){
+    void createGrassField(int field_side){
         // Create empty GameObject to contain the grass tiles
         GameObject field_container = new GameObject("Grass Field Container");
         field_container.transform.position = new Vector3(0,0,0);
