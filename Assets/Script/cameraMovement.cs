@@ -4,24 +4,46 @@ using UnityEngine;
 
 public class cameraMovement : MonoBehaviour
 {
-    // Start is called before the first frame update
+
+    public float scroll_speed = 10f;
+    public Camera camera;
+
+    private Vector3 start_point, end_point;
+
     void Start()
     {
 
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // Check for mouse input wheels
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f ) {
 
-        } else if (Input.GetAxis("Mouse ScrollWheel") < 0f ) {
-
+        // Zoom
+        if(camera.orthographic){
+            camera.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * scroll_speed;
+        } else {
+            camera.fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * scroll_speed;
         }
 
-        if(Input.GetMouseButton(1)){
-            print("RIGHT");
+
+        if(Input.GetMouseButtonDown(0)){
+            print(Input.mousePosition);
         }
+
+        if(Input.GetMouseButton(0)){
+
+        }
+    }
+
+    // Function use to convert the click of the mouse in the relative position in the world.
+    // All the calculation are simply a projection to the xz plane with y = 0
+    Vector3 EvaluateMouseCoordinate(){
+        Vector3 point, tmp_mouse_position;;
+
+        point = new Vector3(0,0,0);
+        // Get mouse position
+        tmp_mouse_position = Input.mousePosition;
+
+        return point;
     }
 }
