@@ -28,6 +28,7 @@ public class cameraMovement : MonoBehaviour
 
         if(Input.GetMouseButtonDown(0)){
             print(Input.mousePosition);
+            print(camera.ViewportToWorldPoint(Input.mousePosition));
         }
 
         if(Input.GetMouseButton(0)){
@@ -38,6 +39,7 @@ public class cameraMovement : MonoBehaviour
     // Function use to convert the click of the mouse in the relative position in the world.
     // All the calculation are simply a projection to the xz plane with y = 0
     Vector3 EvaluateMouseCoordinate(){
+        float width = Screen.width, height = Screen.height;
         Vector3 point, tmp_mouse_position;;
 
         point = new Vector3(0,0,0);
