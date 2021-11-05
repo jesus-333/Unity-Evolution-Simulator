@@ -36,18 +36,24 @@ Neurons used to measur the distance from an objective
 */
 public class ObjectiveNeuron: Neuron {
     public float my_x, my_z, objective_x, objective_z;
+    public GameObject obj = null;
 
     public ObjectiveNeuron(float objective_x, float objecive_z) {
         this.objective_x = objective_x;
         this.objective_z = objecive_z;
+        this.obj = null;
     }
 
     public ObjectiveNeuron(GameObject obj) {
-        this.objective_x = obj.transform.position.x;
-        this.objective_z = obj.transform.position.z;
+        this.obj = obj;
     }
 
     public void updateState(){
-        state = Mathf.Sqrt(Mathf.Pow((my_x - objective_x), 2) + Mathf.Pow((my_z - objective_z), 2));
+        if(obj == null){ // Static objective. Given in input during inizialization and remain fixed (e.g. food).
+            state = Mathf.Sqrt(Mathf.Pow((my_x - objective_x), 2) + Mathf.Pow((my_z - objective_z), 2));
+        } else { // Dynamic objcetive. Linked with a GameObject that can move (e.g. a prey).
+            state = Mathf.Sqrt(Mathf.Pow((my_x - obj.transform.position.x), 2) + Mathf.Pow((my_z - obj.transform.position.z), 2));
+        }
+
     }
 }
