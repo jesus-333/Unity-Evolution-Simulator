@@ -26,9 +26,10 @@ public class Zone : MonoBehaviour
         GameObject tmp_tiles;
 
         // Tiles creation cycle
-        for(int i = -field_side/2; i < field_side/2; i = i + 10){
-            for(int j = -field_side/2; j < field_side/2; j = j + 10){
+        for(int i = -field_side/2; i <= field_side/2; i = i + 10){
+            for(int j = -field_side/2; j <= field_side/2; j = j + 10){
                 tmp_tiles = Instantiate(grass_field_prefab, new Vector3(i, 0, j) , Quaternion.identity, field_container.transform);
+                print(new Vector3(i, 0, j));
             }
         }
     }
