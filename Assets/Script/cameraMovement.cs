@@ -6,7 +6,7 @@ public class cameraMovement : MonoBehaviour
 {
 
     public float scroll_speed = 10f;
-    public Camera camera;
+    public Camera camera_var;
 
     private Vector3 start_point, end_point;
 
@@ -20,22 +20,22 @@ public class cameraMovement : MonoBehaviour
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Zoom
-        if(camera.orthographic){
-            camera.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * scroll_speed;
+        if(camera_var.orthographic){
+            camera_var.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * scroll_speed;
         } else {
-            if(camera.fieldOfView >= 1) { camera.fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * scroll_speed; }
-            else { camera.fieldOfView = 1f; }
+            if(camera_var.fieldOfView >= 1) { camera_var.fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * scroll_speed; }
+            else { camera_var.fieldOfView = 1f; }
         }
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        Vector3 camera_translation = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0.0f) * camera.fieldOfView / 60;
-        camera.transform.Translate(camera_translation);
+        Vector3 camera_translation = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0.0f) * camera_var.fieldOfView / 60;
+        camera_var.transform.Translate(camera_translation);
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Draw safe zone
         if(Input.GetMouseButtonDown(0)){
             print(Input.mousePosition);
-            print(camera.ViewportToWorldPoint(Input.mousePosition));
+            print(camera_var.ViewportToWorldPoint(Input.mousePosition));
         }
 
         if(Input.GetMouseButton(0)){
