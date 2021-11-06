@@ -12,10 +12,11 @@ public class HiddenNeuron {
     public InputNeuron[] back_connected_input_neurons;
     public HiddenNeuron[] back_connected_hidden_neurons;
 
-    public HiddenNeuron() {
-        // Initializes the state of the neuron
-        state = random_init == true ? UnityEngine.Random.Range(-1f, 1f) : 0.5f;
-    }
+    // Initializes the state of the neuron with random value
+    public HiddenNeuron() { state = random_init == true ? UnityEngine.Random.Range(-1f, 1f) : 0.5f; }
+
+    // Initializes the state of the neuron with given value
+    public HiddenNeuron(float state) { this.state = state; }
 
     /*
     Randomly assing different weight to each connection

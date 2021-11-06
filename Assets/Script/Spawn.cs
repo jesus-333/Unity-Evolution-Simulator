@@ -29,8 +29,9 @@ public class Spawn : MonoBehaviour
 
     public void spawnCreature(){
         Vector3 random_position;
-        for(int i = 0; i < n_food; i++){
-            random_position = new Vector3(Random.Range(-x_limit, x_limit), 2, Random.Range(-z_limit, z_limit));
+        float y = creature_prefab.transform.Find("Body").localScale.y;
+        for(int i = 0; i < n_creature; i++){
+            random_position = new Vector3(Random.Range(-x_limit, x_limit), y, Random.Range(-z_limit, z_limit));
             Instantiate(creature_prefab, random_position, Quaternion.identity, creature_container.transform);
         }
     }
