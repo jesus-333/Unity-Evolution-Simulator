@@ -5,7 +5,7 @@ using UnityEngine;
 public class Brain : MonoBehaviour
 {
     public int n_genes = 8;
-    public float speed = 1f;
+    public float speed = 4f;
 
     public InputNeuron[] input_neurons;
     public HiddenNeuron[] hidden_neurons, output_neurons;
@@ -39,12 +39,14 @@ public class Brain : MonoBehaviour
     void Update()
     {
         // Update input neurons state
-        input_neurons[0].updateState();
+        foreach(InputNeuron tmp_neuron in input_neurons){ tmp_neuron.updateState(); }
+        // input_neurons[0].updateState();
 
         // Move the creature
         Move();
 
-        // Debug();
+        if(debug_var){ Debug(); }
+
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,11 +56,15 @@ public class Brain : MonoBehaviour
     Initializes the input neurons one by one. This is necessary due to the fact that input neurons can have particular inizialization.
     */
     public void InitInputNeurons(){
-        input_neurons = new InputNeuron[2];
+        input_neurons = new InputNeuron[3];
 
         ObjectiveNeuron tmp_neuron = new ObjectiveNeuron(0, 0, this.transform);
-        tmp_neuron.setNormalizeState(true);
+        // tmp_neuron.setNormalizeState(true);
         input_neurons[0] = tmp_neuron;
+
+        input_neurons[1] = new XNeuron(this.transform);
+
+        input_neurons[2] = new ZNeuron(this.transform);
     }
 
     /*
@@ -94,8 +100,13 @@ public class Brain : MonoBehaviour
         if(this.transform.position.x > tmp_threeshold || this.transform.position.x < - tmp_threeshold){ output_neurons[0].state *= - 1; }
         if(this.transform.position.z > tmp_threeshold || this.transform.position.z < - tmp_threeshold){ output_neurons[1].state *= - 1; }
 
+        // Evaluate direction based on output neurons and move in that direction
         move_vec = new Vector3(output_neurons[0].state, 0, output_neurons[1].state);
         controller.Move(move_vec * Time.deltaTime * speed);
+
+        // Turn the creature in the movement direction
+        // if (move_vec != Vector3.zero){ this.transform.forward = move_vec; }
+
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -105,6 +116,13 @@ public class Brain : MonoBehaviour
     Method used to print information and perform debugging
     */
     public void Debug(){
-        for(int i = 0; i < 2; i++){print(i + " " + output_neurons[i].state);}
+        // Print of movement neurons state
+        // for(int i = 0; i < 2; i++){print(i + " - move neuron - " + output_neurons[i].state);}
+
+        // Print of input neurons state
+        // print("ObjectiveNeuron:\t\t" + input_neurons[0].state);
+        // print("XNeuron:\t\t" + input_neurons[1].state);
+        // print("ZNeuron:\t\t" + input_neurons[2].state);
+        // print("Position:\t\t" + this.transform.position);
     }
 }

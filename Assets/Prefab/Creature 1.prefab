@@ -159,6 +159,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   n_genes: 8
+  speed: 4
   debug_var: 0
 --- !u!143 &1840808565077556228
 CharacterController:

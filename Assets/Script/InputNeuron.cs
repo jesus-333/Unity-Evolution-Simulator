@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Parent class for every input neurons
+
 public abstract class InputNeuron {
 
     public float state = 0.5f;
@@ -23,8 +26,11 @@ public abstract class InputNeuron {
 
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Input neurons based on coordinate
+
 /*
-Neurons used to measure the distance from an objective
+Neuron used to measure the distance from an objective
 */
 public class ObjectiveNeuron: InputNeuron {
     public float objective_x, objective_z;
@@ -61,4 +67,34 @@ public class ObjectiveNeuron: InputNeuron {
         if(normalize_state){ state = Sigmoid(state); }
     }
 
+}
+
+/*
+Neuron where the state is equal to the X coordinate
+*/
+public class XNeuron: InputNeuron{
+    public Transform my_position;
+
+    public XNeuron(Transform my_position) {
+        this.my_position = my_position;
+    }
+
+    public override void updateState(){
+        state = my_position.position.x;
+    }
+}
+
+/*
+Neuron where the state is equal to the Z coordinate
+*/
+public class ZNeuron: InputNeuron{
+    public Transform my_position;
+
+    public ZNeuron(Transform my_position) {
+        this.my_position = my_position;
+    }
+
+    public override void updateState(){
+        state = my_position.position.z;
+    }
 }
