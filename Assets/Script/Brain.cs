@@ -27,15 +27,22 @@ public class Brain : MonoBehaviour
         InitGenes(genes_mode_init);
 
         // Inizialization of input neurons
-        InitInputNeurons();
-
-        // Inizialization of output neurons
-        output_neurons = InitHiddenNeurons(2, 0.5f);
         /*
         Output Neurons list
-        0 ---> up/down
-        1 ---> left/right
+        0 ---> objcetive
+        1 ---> x position
+        2 ---> z position
         */
+        InitInputNeurons();
+
+
+        // Inizialization of output neurons
+        /*
+        Output Neurons list
+        0 ---> x-axis movement
+        1 ---> z-axis movements
+        */
+        output_neurons = InitHiddenNeurons(2, 0.5f);
 
         // Retrive CharacterController
         controller = this.GetComponent<CharacterController>();
@@ -134,7 +141,19 @@ public class Brain : MonoBehaviour
     Method used to create the connections between the neurons.
     */
     public void InitWiring(){
+        float select_link_type = 0f;
+        for(int i = 0; i < n_links; i++){
+            // Randomly select the type of the link
+            select_link_type = Random.Range(0f, 1f);
 
+            if(select_link_type >= 0f && select_link_type <= (1f/3f)){ // Link between input and hidden
+
+            } else if (select_link_type >= (1f/3f) && select_link_type <= (2f/3f)){ // Link between hidden and output
+
+            } else { // Link between input and output
+
+            }
+        }
     }
 
 
