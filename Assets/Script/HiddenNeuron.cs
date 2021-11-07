@@ -7,18 +7,22 @@ public class HiddenNeuron {
 
     public float state = 0.5f;
     public float[] back_connection_input_weights, back_connection_hidden_weights;
-    public bool random_init = false;
 
     // public InputNeuron[] back_connected_input_neurons;
     // public HiddenNeuron[] back_connected_hidden_neurons;
     public List<InputNeuron> back_connected_input_neurons;
     public List<HiddenNeuron> back_connected_hidden_neurons;
 
-    // Initializes the state of the neuron with random value
-    public HiddenNeuron() { state = random_init == true ? UnityEngine.Random.Range(-1f, 1f) : 0.5f; }
-
     // Initializes the state of the neuron with given value
-    public HiddenNeuron(float state) { this.state = state; }
+    public HiddenNeuron(float state) {
+        this.state = state;
+
+        back_connected_input_neurons = new List<InputNeuron>();
+        back_connected_hidden_neurons = new List<HiddenNeuron>();
+    }
+
+    // Initializes the state of the neuron with random value
+    public HiddenNeuron() : this(UnityEngine.Random.Range(-1f, 1f)) {}
 
     /*
     Randomly assing different weight to each connection

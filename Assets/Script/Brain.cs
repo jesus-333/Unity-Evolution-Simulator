@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Brain : MonoBehaviour
 {
-    public int n_genes = 8, n_links = 0, n_hidden_neurons = 0, genes_mode_init = 2;
+    public int n_genes = 8, genes_mode_init = 2;
+    public int n_links = 0, n_hidden_neurons = 0, n_input_neurons = 0, n_output_neurons = 0;
     public float speed = 4f;
 
-    public string genes;
+    public string genes, brain_wiring;
 
     public InputNeuron[] input_neurons;
     public HiddenNeuron[] hidden_neurons, output_neurons;
@@ -34,7 +35,10 @@ public class Brain : MonoBehaviour
         2 ---> z position
         */
         InitInputNeurons();
+        n_input_neurons = input_neurons.Length;
 
+        // Inizialization of hidden neurons
+        hidden_neurons = InitHiddenNeurons(n_hidden_neurons);
 
         // Inizialization of output neurons
         /*
@@ -42,7 +46,11 @@ public class Brain : MonoBehaviour
         0 ---> x-axis movement
         1 ---> z-axis movements
         */
-        output_neurons = InitHiddenNeurons(2, 0.5f);
+        output_neurons = InitHiddenNeurons(2, 0f);
+        n_output_neurons = output_neurons.Length;
+
+        // Create initial random wiring
+        InitWiring();
 
         // Retrive CharacterController
         controller = this.GetComponent<CharacterController>();
@@ -95,7 +103,7 @@ public class Brain : MonoBehaviour
             break;
         }
 
-        genes = supportMethods.IntToCharLowerCase(n_links) + supportMethods.IntToCharLowerCase(n_hidden_neurons);
+        genes = SupportMethods.IntToCharLowerCase(n_links) + SupportMethods.IntToCharLowerCase(n_hidden_neurons);
     }
 
     /*
@@ -138,21 +146,47 @@ public class Brain : MonoBehaviour
     }
 
     /*
-    Method used to create the connections between the neurons.
+    Method used to create the connections between the neurons randomly.
     */
     public void InitWiring(){
+        brain_wiring = "";
+
+        // Temporary variable to select neurons and link type.
         float select_link_type = 0f;
+        int tmp_index_1, tmp_index_2; // Index 1 is for the start neuron and index 2 for the end neuron
+        string tmp_wiring_string = "";
+
         for(int i = 0; i < n_links; i++){
             // Randomly select the type of the link
             select_link_type = Random.Range(0f, 1f);
 
-            if(select_link_type >= 0f && select_link_type <= (1f/3f)){ // Link between input and hidden
+            if(select_link_type >= 0f && select_link_type <= 0.25f){ // Link between input and hidden
+                tmp_index_1 = Random.Range(0, n_hidden_neurons);
+                tmp_index_2 = Random.Range(0, n_input_neurons);
+                hidden_neurons[tmp_index_1].back_connected_input_neurons.Add(input_neurons[tmp_index_2]);
+                tmp_wiring_string = SupportMethods.IntToCharLowerCase(tmp_index_2) + SupportMethods.IntToCharLowerCase(tmp_index_1 + n_input_neurons + n_output_neurons);
 
-            } else if (select_link_type >= (1f/3f) && select_link_type <= (2f/3f)){ // Link between hidden and output
+            } else if (select_link_type >= 0.25f && select_link_type <= 0.5f){ // Link between hidden and output
+                tmp_index_1 = Random.Range(0, n_output_neurons);
+                tmp_index_2 = Random.Range(0, n_hidden_neurons);
+                output_neurons[tmp_index_1].back_connected_hidden_neurons.Add(hidden_neurons[tmp_index_2]);
+                tmp_wiring_string = SupportMethods.IntToCharLowerCase(tmp_index_2 + n_input_neurons + n_output_neurons) + SupportMethods.IntToCharLowerCase(tmp_index_1 + n_input_neurons);
+
+            } else if (select_link_type >= 0.5f && select_link_type <= 0.75f){ // Link between hidden and hidden
+                tmp_index_1 = Random.Range(0, n_hidden_neurons);
+                tmp_index_2 = Random.Range(0, n_hidden_neurons);
+                hidden_neurons[tmp_index_1].back_connected_hidden_neurons.Add(hidden_neurons[tmp_index_2]);
+                tmp_wiring_string = SupportMethods.IntToCharLowerCase(tmp_index_2 + n_input_neurons + n_output_neurons) + SupportMethods.IntToCharLowerCase(tmp_index_1 + n_input_neurons + n_output_neurons);
+
 
             } else { // Link between input and output
-
+                tmp_index_1 = Random.Range(0, n_output_neurons);
+                tmp_index_2 = Random.Range(0, n_input_neurons);
+                output_neurons[tmp_index_1].back_connected_input_neurons.Add(input_neurons[tmp_index_2]);
+                tmp_wiring_string = SupportMethods.IntToCharLowerCase(tmp_index_2) + SupportMethods.IntToCharLowerCase(tmp_index_1 + n_input_neurons);
             }
+
+            brain_wiring = brain_wiring + tmp_wiring_string;
         }
     }
 

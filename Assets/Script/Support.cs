@@ -39,7 +39,7 @@ https://answers.unity.com/questions/489942/how-to-make-a-readonly-property-in-in
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-public static class supportMethods{
+public static class SupportMethods{
 
     /*
     Convert an int between 0 and 25 into a lower case string
