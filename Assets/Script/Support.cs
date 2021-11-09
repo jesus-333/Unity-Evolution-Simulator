@@ -76,4 +76,13 @@ public static class SupportMethods{
 
         return tmp_c + "";
     }
+
+    /*
+    Convert a char between a and z into a int between 0 and 25
+    */
+    public static int CharToIntLowerCase(char c){
+        int tmp_int = (int)c;
+        tmp_int = tmp_int - 97;
+        return tmp_int;
+    }
 }

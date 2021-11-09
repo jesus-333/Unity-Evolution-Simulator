@@ -70,7 +70,7 @@ public class Brain : MonoBehaviour
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // Init methods
+    // Init methods during first generation
 
     /*
     Divide the number of genes between links and hidden neurons with the constraint that n_links + n_hidden_neurons = n_genes.
@@ -147,6 +147,7 @@ public class Brain : MonoBehaviour
 
     /*
     Method used to create the connections between the neurons randomly.
+    The wiring is then codify into a string called brain_wiring (pubblic attribute of the class)
     */
     public void InitWiring(){
         brain_wiring = "";
@@ -178,7 +179,6 @@ public class Brain : MonoBehaviour
                 hidden_neurons[tmp_index_1].back_connected_hidden_neurons.Add(hidden_neurons[tmp_index_2]);
                 tmp_wiring_string = SupportMethods.IntToCharLowerCase(tmp_index_2 + n_input_neurons + n_output_neurons) + SupportMethods.IntToCharLowerCase(tmp_index_1 + n_input_neurons + n_output_neurons);
 
-
             } else { // Link between input and output
                 tmp_index_1 = Random.Range(0, n_output_neurons);
                 tmp_index_2 = Random.Range(0, n_input_neurons);
@@ -190,6 +190,91 @@ public class Brain : MonoBehaviour
         }
     }
 
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // "Init" methods (and Init related methods) for future generations
+
+    /*
+    Recreate che connections in a brain based on a given input.
+    */
+    public void CopyWiring(string base_brain_wiring){
+        brain_wiring = base_brain_wiring;
+        int tmp_index_1, tmp_index_2, link_type; // Index 1 is for the start neuron and index 2 for the end neuron
+
+        for(int i = 0; i < base_brain_wiring.Length; i = i + 2){
+            // Convert letter to index number (0 to 25)
+            tmp_index_1 = SupportMethods.CharToIntLowerCase(base_brain_wiring[i]);
+            tmp_index_2 = SupportMethods.CharToIntLowerCase(base_brain_wiring[i + 1]);
+
+            // Find the type of connections
+            link_type = FindLinkTypeForCopyWiring(tmp_index_1, tmp_index_2);
+
+            switch(link_type){
+                case 1: // Input to hidden
+                    // Shift index to the corresponding value for tha various array
+                    tmp_index_1 = ReshiftIndexForCopyWiring(tmp_index_1);
+                    tmp_index_2 = ReshiftIndexForCopyWiring(tmp_index_2);
+                    hidden_neurons[tmp_index_1].back_connected_input_neurons.Add(input_neurons[tmp_index_2]);
+                break;
+
+                case 2: // Hidden to output
+                    // Shift index to the corresponding value for tha various array
+                    tmp_index_1 = ReshiftIndexForCopyWiring(tmp_index_1);
+                    tmp_index_2 = ReshiftIndexForCopyWiring(tmp_index_2);
+                    output_neurons[tmp_index_1].back_connected_hidden_neurons.Add(hidden_neurons[tmp_index_2]);
+                break;
+
+                case 3: // Hidden to hidden
+                    // Shift index to the corresponding value for tha various array
+                    tmp_index_1 = ReshiftIndexForCopyWiring(tmp_index_1);
+                    tmp_index_2 = ReshiftIndexForCopyWiring(tmp_index_2);
+                    hidden_neurons[tmp_index_1].back_connected_hidden_neurons.Add(hidden_neurons[tmp_index_2]);
+                break;
+
+                case 4: // Input to output
+                    // Shift index to the corresponding value for tha various array
+                    tmp_index_1 = ReshiftIndexForCopyWiring(tmp_index_1);
+                    tmp_index_2 = ReshiftIndexForCopyWiring(tmp_index_2);
+                    output_neurons[tmp_index_1].back_connected_input_neurons.Add(input_neurons[tmp_index_2]);
+                break;
+            }
+        }
+    }
+
+    /*
+    Used during the InitWiring that recreate the connections based on a string.
+    Find the tuype of link based on the value of the two index.
+    1 ---> Input to hidden
+    2 ---> Hidden to output
+    3 ---> Hidden to hidden
+    4 ---> Input to output
+    */
+    private int FindLinkTypeForCopyWiring(int tmp_index_1, int tmp_index_2){
+        if(tmp_index_1 < n_input_neurons){ // The link start from an input neurons
+            if(tmp_index_2 > n_input_neurons && tmp_index_2 < n_input_neurons + n_output_neurons){ return 1; } // Input to hidden
+            else if(tmp_index_2 >= n_input_neurons + n_output_neurons){ return 4; } // Input to output
+        } else if(tmp_index_1 >= n_input_neurons + n_output_neurons){ // The link start from a hidden neurons
+            if(tmp_index_2 > n_input_neurons && tmp_index_2 < n_input_neurons + n_output_neurons){ return 2; } // Hidden to hidden
+            else if(tmp_index_2 >= n_input_neurons + n_output_neurons){ return 3; } // Hidden to output
+        }
+
+        return -1; // ERROR
+    }
+
+    /*
+    Used during the InitWiring that recreate the connections based on a string.
+    Shift the index from 0 to 25 into the value for the various array of neurons.
+    */
+    private int ReshiftIndexForCopyWiring(int tmp_index){
+        if(tmp_index < n_input_neurons){ //Input neurons
+            return tmp_index;
+        } else if(tmp_index >= n_input_neurons && tmp_index < n_input_neurons + n_output_neurons){ // Output neurons
+            return tmp_index - n_input_neurons;
+        } else if(tmp_index >=n_input_neurons + n_output_neurons){ // Hidden neurons
+            return tmp_index - n_input_neurons - n_output_neurons;
+        }
+
+        return -1; // ERROR
+    }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Action methods
