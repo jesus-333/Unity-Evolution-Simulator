@@ -29,7 +29,7 @@ public class Brain : MonoBehaviour
 
         // Inizialization of input neurons
         /*
-        Output Neurons list
+        Input Neurons list
         0 ---> objcetive
         1 ---> x position
         2 ---> z position
@@ -147,7 +147,8 @@ public class Brain : MonoBehaviour
 
     /*
     Method used to create the connections between the neurons randomly.
-    The wiring is then codify into a string called brain_wiring (pubblic attribute of the class)
+    The wiring is then codify into a string called brain_wiring (pubblic attribute of the class).
+    The string is composed by pair of letters. For each pair the first letter is the starting neuron of the connections and the second the end neuron of the connection.
     */
     public void InitWiring(){
         brain_wiring = "";
@@ -289,7 +290,7 @@ public class Brain : MonoBehaviour
         move_vec = new Vector3(output_neurons[0].state, 0, output_neurons[1].state);
         controller.Move(move_vec * Time.deltaTime * speed);
 
-        // Turn the creature in the movement direction
+        // Turn the creature in the movement direction (NOT WORKING)
         // if (move_vec != Vector3.zero){ this.transform.forward = move_vec; }
 
     }
