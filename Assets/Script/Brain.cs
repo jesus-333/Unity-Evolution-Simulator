@@ -14,6 +14,8 @@ public class Brain : MonoBehaviour
     public HiddenNeuron[] hidden_neurons, output_neurons;
 
     private Vector3 move_vec;
+
+    private float x_limit, z_limit;
     private CharacterController controller;
 
     public bool debug_var;
@@ -54,6 +56,10 @@ public class Brain : MonoBehaviour
 
         // Retrive CharacterController
         controller = this.GetComponent<CharacterController>();
+
+        // Find coordinate limits
+        x_limit = GameObject.Find("Script Container").GetComponent<Spawn>().x_limit;
+        z_limit = GameObject.Find("Script Container").GetComponent<Spawn>().z_limit;
     }
 
     void Update()
@@ -68,7 +74,7 @@ public class Brain : MonoBehaviour
         foreach(HiddenNeuron tmp_neuron in output_neurons){ tmp_neuron.updateState(); }
 
         // Move the creature
-        // Move();
+        Move();
 
         if(debug_var){ Debug(); }
 
@@ -291,18 +297,24 @@ public class Brain : MonoBehaviour
     // Action methods
 
     public void Move(){
-        // Temporary code to test movement
-        // int tmp_threeshold = 20;
-        // if(this.transform.position.x > tmp_threeshold || this.transform.position.x < - tmp_threeshold){ output_neurons[0].state *= - 1; }
-        // if(this.transform.position.z > tmp_threeshold || this.transform.position.z < - tmp_threeshold){ output_neurons[1].state *= - 1; }
+        if(checkPosition()){
+            // Evaluate direction based on output neurons and move in that direction
+            move_vec = new Vector3(output_neurons[0].state, 0, output_neurons[1].state);
+            controller.Move(move_vec * Time.deltaTime * speed);
 
-        // Evaluate direction based on output neurons and move in that direction
-        move_vec = new Vector3(output_neurons[0].state, 0, output_neurons[1].state);
-        controller.Move(move_vec * Time.deltaTime * speed);
+            // Turn the creature in the movement direction
+            if (move_vec != Vector3.zero){ this.transform.forward = move_vec; }
+        }
+    }
 
-        // Turn the creature in the movement direction (NOT WORKING)
-        // if (move_vec != Vector3.zero){ this.transform.forward = move_vec; }
+    /*
+    Check if the creature is inside the limits. If inside return true otherwise false.
+    */
+    public bool checkPosition(){
+        if(Mathf.Abs(this.transform.position.x) >= x_limit){ return false; }
+        if(Mathf.Abs(this.transform.position.z) >= z_limit){ return false; }
 
+        return true;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

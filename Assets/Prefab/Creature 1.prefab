@@ -159,7 +159,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   n_genes: 8
+  genes_mode_init: 2
+  n_links: 0
+  n_hidden_neurons: 0
+  n_input_neurons: 0
+  n_output_neurons: 0
   speed: 4
+  genes: 
+  brain_wiring: 
   debug_var: 0
 --- !u!143 &1840808565077556228
 CharacterController:
