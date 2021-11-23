@@ -60,10 +60,15 @@ public class Brain : MonoBehaviour
     {
         // Update input neurons state
         foreach(InputNeuron tmp_neuron in input_neurons){ tmp_neuron.updateState(); }
-        // input_neurons[0].updateState();
+
+        // Update hidden neurons state
+        foreach(HiddenNeuron tmp_neuron in hidden_neurons){ tmp_neuron.updateState(); }
+
+        // Update output neurons state
+        foreach(HiddenNeuron tmp_neuron in output_neurons){ tmp_neuron.updateState(); }
 
         // Move the creature
-        Move();
+        // Move();
 
         if(debug_var){ Debug(); }
 
@@ -187,8 +192,13 @@ public class Brain : MonoBehaviour
                 tmp_wiring_string = SupportMethods.IntToCharLowerCase(tmp_index_2) + SupportMethods.IntToCharLowerCase(tmp_index_1 + n_input_neurons);
             }
 
+            // Update wiring string
             brain_wiring = brain_wiring + tmp_wiring_string;
         }
+
+        // Assign random weight to each connection
+        foreach(HiddenNeuron tmp_neuron in hidden_neurons){ tmp_neuron.randomInitWeights(); }
+        foreach(HiddenNeuron tmp_neuron in output_neurons){ tmp_neuron.randomInitWeights(); }
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

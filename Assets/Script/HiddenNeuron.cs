@@ -46,7 +46,7 @@ public class HiddenNeuron {
         // Hidden/Hidden (or Hidden/output) connections
         back_connection_hidden_weights = new float[back_connected_hidden_neurons.Count];
         for (int i = 0; i < back_connected_hidden_neurons.Count; i++){
-            back_connection_input_weights[i] = UnityEngine.Random.Range(min_weight, max_weight);
+            back_connection_hidden_weights[i] = UnityEngine.Random.Range(min_weight, max_weight);
         }
     }
 

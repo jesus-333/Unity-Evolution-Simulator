@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -102,5 +104,11 @@ public static class SupportMethods{
         tmp_array[n - 1] = tmp_array[n - 2] + step;
 
         return tmp_array;
+    }
+
+    public static void printObjectAttributes<T>(T obj){
+        foreach(PropertyDescriptor descriptor in TypeDescriptor.GetProperties(obj)){
+            Console.WriteLine(descriptor.Name);
+        }
     }
 }
