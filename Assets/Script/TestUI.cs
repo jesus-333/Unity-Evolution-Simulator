@@ -94,7 +94,7 @@ public class TestUI : MonoBehaviour
     Use the information inside the connection code (a pair of letter from the brain_wiring string) to draw a connection between two neurons.
     */
     public void drawSingleConnection(string connection_code){
-        print(connection_code);
+        // print(connection_code);
 
         // Convert char to int index
         int tmp_index_1, tmp_index_2;

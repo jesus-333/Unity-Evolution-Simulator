@@ -60,6 +60,9 @@ public class Brain : MonoBehaviour
         // Find coordinate limits
         x_limit = GameObject.Find("Script Container").GetComponent<Spawn>().x_limit;
         z_limit = GameObject.Find("Script Container").GetComponent<Spawn>().z_limit;
+
+        // Colorate the creature
+        setCreatureColor();
     }
 
     void Update()
@@ -319,6 +322,35 @@ public class Brain : MonoBehaviour
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Other methods
+
+    public void setCreatureColor(){
+        Color tmp_color;
+        tmp_color = generateColor(brain_wiring);
+
+        // Body
+        this.transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", tmp_color);
+
+        // Head
+        this.transform.GetChild(1).GetComponent<Renderer>().material.SetColor("_Color", tmp_color);
+    }
+
+    /*
+    Convert the input string in a color
+    */
+    public Color generateColor(string input){
+        Color tmp_color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+        int step = input.Length/3;
+        float r,g,b, total;
+
+        r = SupportMethods.addStringLetter(input.Substring(0, step));
+        g = SupportMethods.addStringLetter(input.Substring(step, 2 * step));
+        b = SupportMethods.addStringLetter(input.Substring(2 * step));
+
+        total = r + g + b;
+        tmp_color = new Color(r/total, g/total, b/total);
+
+        return tmp_color;
+    }
 
     /*
     Method used to print information and perform debugging.

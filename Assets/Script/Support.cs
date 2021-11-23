@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 // Files used to define extra functions/class
 
@@ -86,6 +85,18 @@ public static class SupportMethods{
         int tmp_int = (int)c;
         tmp_int = tmp_int - 97;
         return tmp_int;
+    }
+
+    /*
+    Sum the letter of a string as numbers
+    */
+    public static int addStringLetter(string s){
+        int tot = 0;
+        for(int i = 0; i < s.Length; i++){
+            tot += CharToIntLowerCase(s[i]);
+        }
+
+        return tot;
     }
 
     /*
