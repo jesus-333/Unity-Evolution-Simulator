@@ -37,9 +37,6 @@ public class Brain : MonoBehaviour
         InitInputNeurons();
         n_input_neurons = input_neurons.Length;
 
-        // Inizialization of hidden neurons
-        hidden_neurons = InitHiddenNeurons(n_hidden_neurons);
-
         // Inizialization of output neurons
         /*
         Output Neurons list
@@ -48,6 +45,9 @@ public class Brain : MonoBehaviour
         */
         output_neurons = InitHiddenNeurons(2, 0f);
         n_output_neurons = output_neurons.Length;
+
+        // Inizialization of hidden neurons
+        hidden_neurons = InitHiddenNeurons(n_hidden_neurons);
 
         // Create initial random wiring
         InitWiring();

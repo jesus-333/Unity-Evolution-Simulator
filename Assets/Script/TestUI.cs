@@ -11,9 +11,11 @@ public class TestUI : MonoBehaviour
     public bool show_net = false;
 
     void Update(){
-        if(creature != null){ creature = creature_container.transform.GetChild(0).gameObject; }
+        if(creature == null){ creature = creature_container.transform.GetChild(0).gameObject; }
 
         if(show_net && creature != null){
+            show_net = false;
+
             GameObject tmp_UI_neuron;
 
             // Retrive UI measures
@@ -26,16 +28,31 @@ public class TestUI : MonoBehaviour
             //GameObject[] neuron_list = new GameObject[creature_brain.n_input_neurons + creature_brain.n_output_neurons + creature_brain.n_hidden_neurons];
             n_neurons = creature_brain.n_input_neurons + creature_brain.n_output_neurons + creature_brain.n_hidden_neurons;
 
+
+            // Variable used during UI Neurons creation
+            float tmp_x = (UI_width - 20f)/2f * 0.6f, tmp_y, border = 80f;
+            float[] tmp_vector_height_input = SupportMethods.linspace(-(UI_height - border)/2f, (UI_height - border)/2f, creature_brain.n_input_neurons);
+            float[] tmp_vector_height_output = SupportMethods.linspace(0f, (UI_height - border)/2f, creature_brain.n_output_neurons);
+            float[] tmp_vector_height_hidden = SupportMethods.linspace(-(UI_height - border)/2f, 0f, creature_brain.n_hidden_neurons);
+            Vector3 tmp_position;
+
             // Create UI Neurons
             for(int i = 0; i < n_neurons; i++){
-                Vector3 random_position = new Vector3(Random.Range(-UI_width/2, UI_width/2), Random.Range(-UI_height/2, UI_height/2), 1);
-                tmp_UI_neuron = Instantiate(UI_neuron_prefab, random_position, Quaternion.identity, UI_object.transform);
+                print("Show neuron:" + i);
+                // Create neurons
+                tmp_UI_neuron = Instantiate(UI_neuron_prefab, new Vector3(0f, 0f, 0f), Quaternion.identity, UI_object.transform);
 
-                // tmp_UI_neuron = Instantiate(UI_neuron_prefab, new Vector3(0f, 0f, 0f), Quaternion.identity, UI_object.transform);
-                // tmp_UI_neuron.GetComponent<RectTransform>().localPosition = ;
+                // Moved and choose color based on type
+                if(i <  creature_brain.n_input_neurons){ // Input neurons
+                    tmp_position = new Vector3(-tmp_x, tmp_vector_height_input[i], 1);
+                } else if(i >=  creature_brain.n_input_neurons && i < creature_brain.n_input_neurons + creature_brain.n_output_neurons){ //Output neurons
+                    tmp_position = new Vector3(tmp_x, tmp_vector_height_output[i - creature_brain.n_input_neurons], 1);
+                } else { // Hidden neurons
+                    tmp_position = new Vector3(0, tmp_vector_height_hidden[i - creature_brain.n_input_neurons - creature_brain.n_output_neurons], 1);
+                }
+
+                tmp_UI_neuron.GetComponent<RectTransform>().localPosition = tmp_position;
             }
-
-            show_net = false;
         }
     }
 

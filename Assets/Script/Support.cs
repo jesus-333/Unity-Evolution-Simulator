@@ -85,4 +85,22 @@ public static class SupportMethods{
         tmp_int = tmp_int - 97;
         return tmp_int;
     }
+
+    /*
+    Create an array of n linearly spaced valued. The first value is start and the last value is end.
+    */
+    public static float[] linspace(float start, float end, int n){
+        // Create array
+        float[] tmp_array = new float[n];
+
+        // Evaluate step between numbers
+        float step = (end - start)/(float)(n - 1);
+
+        // Insert values
+        tmp_array[0] = start;
+        for(int i = 1; i < n - 1; i++){ tmp_array[i] = tmp_array[i - 1] + step; }
+        tmp_array[n - 1] = tmp_array[n - 2] + step;
+
+        return tmp_array;
+    }
 }
