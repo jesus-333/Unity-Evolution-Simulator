@@ -70,6 +70,7 @@ public class TestUI : MonoBehaviour
                     tmp_state = creature_brain.output_neurons[i - creature_brain.n_input_neurons].state;
                 } else { // Hidden neurons
                     tmp_state = creature_brain.hidden_neurons[i - creature_brain.n_input_neurons - creature_brain.n_output_neurons].state;
+                    print(i + "\t" + tmp_state);
                 }
 
                 tmp_text.text = tmp_state.ToString("F2");
