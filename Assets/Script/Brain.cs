@@ -316,7 +316,10 @@ public class Brain : MonoBehaviour
             controller.Move(move_vec * Time.deltaTime * speed);
 
             // Turn the creature in the movement direction
-            if (move_vec != Vector3.zero){ this.transform.forward = move_vec; }
+            if (move_vec != Vector3.zero){
+                this.transform.forward = move_vec;
+                this.transform.Rotate(0, -90, 0);
+            }
         }
     }
 

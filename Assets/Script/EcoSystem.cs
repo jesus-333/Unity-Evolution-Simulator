@@ -24,7 +24,8 @@ public class EcoSystem : MonoBehaviour
         if(time_in_seconds > 0){ // If there is time continue the countdown
             time_in_seconds -= Time.deltaTime;
         } else {
-
+            time_in_seconds = 0;
+            killOutsideSafeZone();
         }
 
         displayInfo();
@@ -103,6 +104,22 @@ public class EcoSystem : MonoBehaviour
         count_not_safe.text = "OUT Safe: " + (tot_creature - countSafe()).ToString();
 
     }
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Methods related to natural selection
+
+    /*
+    Destroy all the creatures outside the safe zone
+    */
+    public void killOutsideSafeZone(){
+        for(int i = 0; i < creature_container.transform.childCount; i++){
+            if(!checkIfInsideSafeZone(creature_container.transform.GetChild(i).position)){
+                Destroy(creature_container.transform.GetChild(i).gameObject);
+            }
+
+        }
+    }
+
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 }
