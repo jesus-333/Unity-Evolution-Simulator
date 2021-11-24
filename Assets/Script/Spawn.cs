@@ -10,8 +10,8 @@ public class Spawn : MonoBehaviour
 
     void Start()
     {
-        spawnFood();
-        spawnCreature();
+        spawnFood(n_creature);
+        spawnCreature(n_creature, creature_container);
     }
 
     void Update()
@@ -19,15 +19,15 @@ public class Spawn : MonoBehaviour
 
     }
 
-    public void spawnFood(){
+    public void spawnFood(int n){
         Vector3 random_position;
-        for(int i = 0; i < n_food; i++){
+        for(int i = 0; i < n; i++){
             random_position = new Vector3(Random.Range(-x_limit, x_limit), 0, Random.Range(-z_limit, z_limit));
             Instantiate(food_prefab, random_position, Quaternion.identity, food_container.transform);
         }
     }
 
-    public void spawnCreature(){
+    public void spawnCreature(int n, GameObject creature_container){
         Vector3 random_position, objective;
         GameObject tmp_creature;
 
@@ -36,13 +36,17 @@ public class Spawn : MonoBehaviour
 
         // Spawn creature
         float y = creature_prefab.transform.Find("Body").localScale.y;
-        for(int i = 0; i < n_creature; i++){
+        for(int i = 0; i < n; i++){
             random_position = new Vector3(Random.Range(-x_limit, x_limit), y, Random.Range(-z_limit, z_limit));
             tmp_creature = Instantiate(creature_prefab, random_position, Quaternion.identity, creature_container.transform);
 
             // Invoke init methods for the creatures (neurons creation, wiring creation etc)
             tmp_creature.GetComponent<Brain>().firstGenerationInit(objective.x, objective.z);
         }
+    }
+
+    public void spawnCreature(int n){
+        spawnCreature(n, creature_container);
     }
 
 

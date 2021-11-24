@@ -10,12 +10,15 @@ public class EcoSystem : MonoBehaviour
     public GameObject creature_container;
 
     private int tot_creature;
+    private float time_copy;
     private Vector3 start_safe_zone, end_safe_zone;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public void Start(){
         retrieveInformation();
+
+        time_copy = time_in_seconds;
     }
 
     void Update()
@@ -25,10 +28,15 @@ public class EcoSystem : MonoBehaviour
             time_in_seconds -= Time.deltaTime;
         } else {
             time_in_seconds = 0;
+
             killOutsideSafeZone();
+
+            time_in_seconds = time_copy;
         }
 
         displayInfo();
+
+        // if (Input.GetKeyDown(KeyCode.R)){ copySurvivedBrain(); }
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -118,6 +126,44 @@ public class EcoSystem : MonoBehaviour
             }
 
         }
+    }
+
+    public void copySurvivedBrain(){
+        GameObject tmp_creatures_container = new GameObject();
+        tmp_creatures_container.transform.name = "Temporary Survived Creatures Container";
+        Brain tmp_brain;
+
+        GameObject.Find("Script Container").GetComponent<Spawn>().spawnCreature(countSafe(), tmp_creatures_container);
+
+        for(int i = 0; i < creature_container.transform.childCount; i++){
+            // Retrieve brain of the survived creature
+            tmp_brain = creature_container.transform.GetChild(i).gameObject.GetComponent<Brain>();
+
+            // Removed brain with random init and add brain of the survived creature
+            Destroy(tmp_creatures_container.transform.GetChild(i).gameObject.GetComponent<Brain>());
+
+            UnityEditorInternal.ComponentUtility.CopyComponent(tmp_brain);
+            UnityEditorInternal.ComponentUtility.PasteComponentAsNew(tmp_creatures_container.transform.GetChild(i).gameObject);
+        }
+
+        // Kill old survived creatures
+        for(int i = 0; i < creature_container.transform.childCount; i++){ Destroy( creature_container.transform.GetChild(i).gameObject);}
+
+        // Move new creature inside the normal container
+        foreach(Transform creature in creature_container.transform){creature.transform.parent = GameObject.Find("Creature Container").transform;}
+
+        // Destroy temporary container
+        Destroy(tmp_creatures_container);
+
+    }
+
+    /*
+    Spawn new creatures. The number of new creatures is the number of creatures killed.
+    */
+    public void repopulate(){
+        Spawn spawn_script = GameObject.Find("Script Container").GetComponent<Spawn>();
+        int n_new_creature = spawn_script.n_creature - countSafe();
+        spawn_script.spawnCreature(n_new_creature);
     }
 
 

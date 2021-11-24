@@ -306,6 +306,43 @@ public class Brain : MonoBehaviour
         return -1; // ERROR
     }
 
+    /*
+    Copy the information inside the old_brain
+    */
+    public void InitCopyBrain(Brain old_brain){
+        // Copy primitive attributes
+        n_genes = old_brain.n_genes;
+        genes_mode_init = old_brain.genes_mode_init;
+        n_links = old_brain.n_links;
+        n_hidden_neurons = old_brain.n_hidden_neurons;
+        n_input_neurons = old_brain.n_input_neurons;
+        n_output_neurons = old_brain.n_output_neurons;
+        speed = old_brain.speed;
+        genes = old_brain.genes;
+        brain_wiring = old_brain.brain_wiring;
+
+        // public int n_genes = 8, genes_mode_init = 2;
+        // public int n_links = 0, n_hidden_neurons = 0, n_input_neurons = 0, n_output_neurons = 0;
+        // public float speed = 4f;
+        //
+        // public string genes, brain_wiring;
+        //
+        // public InputNeuron[] input_neurons;
+        // public HiddenNeuron[] hidden_neurons, output_neurons;
+
+        // Retrive CharacterController
+        controller = this.GetComponent<CharacterController>();
+
+        // Find coordinate limits
+        x_limit = GameObject.Find("Script Container").GetComponent<Spawn>().x_limit;
+        z_limit = GameObject.Find("Script Container").GetComponent<Spawn>().z_limit;
+
+        // Colorate the creature
+        setCreatureColor();
+
+        init_executed = true;
+    }
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Action methods
 

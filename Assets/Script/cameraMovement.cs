@@ -34,8 +34,8 @@ public class cameraMovement : MonoBehaviour
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Draw safe zone
         if(Input.GetMouseButtonDown(0)){
-            print(Input.mousePosition);
-            print(camera_var.ViewportToWorldPoint(Input.mousePosition));
+            // print(Input.mousePosition);
+            // print(camera_var.ViewportToWorldPoint(Input.mousePosition));
         }
 
         if(Input.GetMouseButton(0)){
