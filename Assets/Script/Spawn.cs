@@ -10,7 +10,7 @@ public class Spawn : MonoBehaviour
 
     void Start()
     {
-        spawnFood(n_creature);
+        spawnFood(n_food);
         spawnCreature(n_creature, creature_container);
     }
 
@@ -41,7 +41,7 @@ public class Spawn : MonoBehaviour
             tmp_creature = Instantiate(creature_prefab, random_position, Quaternion.identity, creature_container.transform);
 
             // Invoke init methods for the creatures (neurons creation, wiring creation etc)
-            tmp_creature.GetComponent<Brain>().firstGenerationInit(objective.x, objective.z);
+            tmp_creature.GetComponent<Brain>().firstGenerationInit(objective);
         }
     }
 

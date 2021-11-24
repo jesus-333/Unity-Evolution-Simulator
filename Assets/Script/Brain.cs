@@ -17,7 +17,7 @@ public class Brain : MonoBehaviour
     private float x_limit, z_limit;
     private bool init_executed = false;
 
-    private Vector3 move_vec;
+    private Vector3 move_vec, objective;
     private CharacterController controller;
 
     public bool debug_var;
@@ -50,7 +50,7 @@ public class Brain : MonoBehaviour
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Init methods during first generation
 
-    public void firstGenerationInit(float objective_x, float objective_z){
+    public void firstGenerationInit(Vector3 objective){
         // Inizialization of the genes
         InitGenes(genes_mode_init);
 
@@ -61,8 +61,9 @@ public class Brain : MonoBehaviour
         1 ---> x position
         2 ---> z position
         */
-        InitInputNeurons(objective_x, objective_z);
+        InitInputNeurons(objective.x, objective.z);
         n_input_neurons = input_neurons.Length;
+        this.objective = objective;
 
         // Inizialization of output neurons
         /*
@@ -321,14 +322,17 @@ public class Brain : MonoBehaviour
         genes = old_brain.genes;
         brain_wiring = old_brain.brain_wiring;
 
-        // public int n_genes = 8, genes_mode_init = 2;
-        // public int n_links = 0, n_hidden_neurons = 0, n_input_neurons = 0, n_output_neurons = 0;
-        // public float speed = 4f;
-        //
-        // public string genes, brain_wiring;
-        //
-        // public InputNeuron[] input_neurons;
-        // public HiddenNeuron[] hidden_neurons, output_neurons;
+        // Copy Input Neurons
+        InitInputNeurons(old_brain.objective.x, old_brain.objective.z);
+        this.objective = old_brain.objective;
+
+        // Copy hidden neurons
+        hidden_neurons = new HiddenNeuron[old_brain.hidden_neurons.Length];
+        for(int i = 0; i < hidden_neurons.Length; i++){ hidden_neurons[i] = new HiddenNeuron(old_brain.hidden_neurons[i]);}
+
+        // Copy output neurons
+        output_neurons = new HiddenNeuron[old_brain.output_neurons.Length];
+        for(int i = 0; i < output_neurons.Length; i++){ output_neurons[i] = new HiddenNeuron(old_brain.output_neurons[i]);}
 
         // Retrive CharacterController
         controller = this.GetComponent<CharacterController>();
@@ -353,10 +357,10 @@ public class Brain : MonoBehaviour
             controller.Move(move_vec * Time.deltaTime * speed);
 
             // Turn the creature in the movement direction
-            if (move_vec != Vector3.zero){
-                this.transform.forward = move_vec;
-                this.transform.Rotate(0, -90, 0);
-            }
+            // if (move_vec != Vector3.zero){
+            //     this.transform.forward = move_vec;
+            //     this.transform.Rotate(0, -90, 0);
+            // }
         }
     }
 

@@ -20,12 +20,31 @@ public class HiddenNeuron {
     public HiddenNeuron(float state) {
         this.state = state;
 
-        back_connected_input_neurons = new List<InputNeuron>();
-        back_connected_hidden_neurons = new List<HiddenNeuron>();
+        this.back_connected_input_neurons = new List<InputNeuron>();
+        this.back_connected_hidden_neurons = new List<HiddenNeuron>();
     }
 
     // Initializes the state of the neuron with random value
     public HiddenNeuron() : this(UnityEngine.Random.Range(-1f, 1f)) {}
+
+    public HiddenNeuron(HiddenNeuron old_neuron){
+        // Copy old state
+        this.state = old_neuron.state;
+
+        // Copy connections
+        this.back_connected_input_neurons = new List<InputNeuron>(old_neuron.back_connected_input_neurons);
+        this.back_connected_hidden_neurons = new List<HiddenNeuron>(old_neuron.back_connected_hidden_neurons);
+
+        // Copy weights
+        if(old_neuron.back_connection_input_weights != null){
+            this.back_connection_input_weights = new float[back_connected_input_neurons.Count];
+            old_neuron.back_connection_input_weights.CopyTo(this.back_connection_input_weights, 0);
+        }
+        if(old_neuron.back_connection_hidden_weights != null){
+            this.back_connection_hidden_weights = new float[back_connected_hidden_neurons.Count];
+            old_neuron.back_connection_hidden_weights.CopyTo(this.back_connection_hidden_weights, 0);
+         }
+    }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Setter methods (TODO in future)
@@ -42,6 +61,7 @@ public class HiddenNeuron {
         for (int i = 0; i < back_connected_input_neurons.Count; i++){
             back_connection_input_weights[i] = UnityEngine.Random.Range(min_weight, max_weight);
         }
+        // Debug.Log(back_connection_input_weights.Length);
 
         // Hidden/Hidden (or Hidden/output) connections
         back_connection_hidden_weights = new float[back_connected_hidden_neurons.Count];

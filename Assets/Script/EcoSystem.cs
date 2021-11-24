@@ -9,7 +9,7 @@ public class EcoSystem : MonoBehaviour
     public Text timer, count_safe, count_not_safe;
     public GameObject creature_container;
 
-    private int tot_creature;
+    private int tot_creature, creature_survived;
     private float time_copy;
     private Vector3 start_safe_zone, end_safe_zone;
 
@@ -27,16 +27,37 @@ public class EcoSystem : MonoBehaviour
         if(time_in_seconds > 0){ // If there is time continue the countdown
             time_in_seconds -= Time.deltaTime;
         } else {
-            time_in_seconds = 0;
-
-            killOutsideSafeZone();
-
-            time_in_seconds = time_copy;
+            // // Save the number of creatures survived
+            // creature_survived = countSafe();
+            //
+            // // Kill all the creatures outside the safe zone
+            // killOutsideSafeZone();
+            //
+            // // Copy the brains of the survived creatures in new creatures
+            // copySurvived();
+            //
+            // // Spawn new creatures with random wiring
+            // repopulate();
+            //
+            // // Reset the timer
+            // time_in_seconds = time_copy;
         }
 
         displayInfo();
 
-        // if (Input.GetKeyDown(KeyCode.R)){ copySurvivedBrain(); }
+        if (Input.GetKeyDown(KeyCode.R)){
+
+            creature_survived = countSafe();
+            print("creature_survived = " + creature_survived);
+
+            killOutsideSafeZone();
+
+            copySurvived();
+
+            repopulate();
+
+            time_in_seconds = time_copy;
+        }
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -55,10 +76,17 @@ public class EcoSystem : MonoBehaviour
 
     // Convert time in minutes:seconds format.
     public string convertTimeInString(){
+        string tmp_time = "";
         float minutes = Mathf.FloorToInt(time_in_seconds / 60);
         float seconds = Mathf.FloorToInt(time_in_seconds % 60);
 
-        return minutes + ":" + seconds + "\t";
+        if(minutes < 10){ tmp_time = tmp_time + "0" + minutes; }
+        else {tmp_time = tmp_time + minutes; }
+
+        if(seconds < 10){ tmp_time = tmp_time + ":0" + seconds; }
+        else {tmp_time = tmp_time + ":" + seconds; }
+
+        return tmp_time;
     }
 
     public int countSafe(){
@@ -117,52 +145,62 @@ public class EcoSystem : MonoBehaviour
     // Methods related to natural selection
 
     /*
-    Destroy all the creatures outside the safe zone
+    Destroy all the creatures outside the safe zone.
     */
     public void killOutsideSafeZone(){
         for(int i = 0; i < creature_container.transform.childCount; i++){
             if(!checkIfInsideSafeZone(creature_container.transform.GetChild(i).position)){
                 Destroy(creature_container.transform.GetChild(i).gameObject);
             }
-
         }
     }
 
-    public void copySurvivedBrain(){
-        GameObject tmp_creatures_container = new GameObject();
-        tmp_creatures_container.transform.name = "Temporary Survived Creatures Container";
-        Brain tmp_brain;
-
-        GameObject.Find("Script Container").GetComponent<Spawn>().spawnCreature(countSafe(), tmp_creatures_container);
-
+    /*
+    Kill all the creatures alive. (Can be combined with the killOutsideSafeZone() methods)
+    */
+    public void killAllCreatures(){
         for(int i = 0; i < creature_container.transform.childCount; i++){
-            // Retrieve brain of the survived creature
-            tmp_brain = creature_container.transform.GetChild(i).gameObject.GetComponent<Brain>();
+            Destroy(creature_container.transform.GetChild(i).gameObject);
+        }
+    }
 
-            // Removed brain with random init and add brain of the survived creature
-            Destroy(tmp_creatures_container.transform.GetChild(i).gameObject.GetComponent<Brain>());
-
-            UnityEditorInternal.ComponentUtility.CopyComponent(tmp_brain);
-            UnityEditorInternal.ComponentUtility.PasteComponentAsNew(tmp_creatures_container.transform.GetChild(i).gameObject);
+    /*
+    Create a copy of the survived creatures. Method necessary due to the problem with child position and relocation.
+    */
+    public void copySurvived(){
+        // Backup array with the brains of the survived creatures
+        Brain[] backup_brains = new Brain[creature_survived];
+        for(int i = 0; i < creature_survived; i++){
+            backup_brains[i] = creature_container.transform.GetChild(i).gameObject.GetComponent<Brain>();
         }
 
-        // Kill old survived creatures
-        for(int i = 0; i < creature_container.transform.childCount; i++){ Destroy( creature_container.transform.GetChild(i).gameObject);}
+        // Spawn new creature in numbers equal to the survived inside a temporary container
+        GameObject tmp_creatures_container = new GameObject();
+        tmp_creatures_container.transform.name = "Temporary Survived Creatures Container";
+        GameObject.Find("Script Container").GetComponent<Spawn>().spawnCreature(creature_survived, tmp_creatures_container);
 
-        // Move new creature inside the normal container
+        // Upload the brain of the survived creatures
+        for(int i = 0; i < tmp_creatures_container.transform.childCount; i++){
+            tmp_creatures_container.transform.GetChild(i).gameObject.GetComponent<Brain>().InitCopyBrain(backup_brains[i]);
+        }
+
+        // Kill the original survived creatures
+        killAllCreatures();
+
+        // Move new creatures inside the normal container
         foreach(Transform creature in creature_container.transform){creature.transform.parent = GameObject.Find("Creature Container").transform;}
 
         // Destroy temporary container
         Destroy(tmp_creatures_container);
-
     }
 
+
     /*
-    Spawn new creatures. The number of new creatures is the number of creatures killed.
+    Spawn new creatures with random brains. The number of new creatures is the number of creatures killed.
     */
     public void repopulate(){
         Spawn spawn_script = GameObject.Find("Script Container").GetComponent<Spawn>();
-        int n_new_creature = spawn_script.n_creature - countSafe();
+        int n_new_creature = spawn_script.n_creature - creature_survived;
         spawn_script.spawnCreature(n_new_creature);
     }
 
