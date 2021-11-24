@@ -28,11 +28,20 @@ public class Spawn : MonoBehaviour
     }
 
     public void spawnCreature(){
-        Vector3 random_position;
+        Vector3 random_position, objective;
+        GameObject tmp_creature;
+
+        // Find objective as the center of the safe zone
+        objective = (GameObject.Find("Script Container").GetComponent<Zone>().start_position + GameObject.Find("Script Container").GetComponent<Zone>().end_position) / 2;
+
+        // Spawn creature
         float y = creature_prefab.transform.Find("Body").localScale.y;
         for(int i = 0; i < n_creature; i++){
             random_position = new Vector3(Random.Range(-x_limit, x_limit), y, Random.Range(-z_limit, z_limit));
-            Instantiate(creature_prefab, random_position, Quaternion.identity, creature_container.transform);
+            tmp_creature = Instantiate(creature_prefab, random_position, Quaternion.identity, creature_container.transform);
+
+            // Invoke init methods for the creatures (neurons creation, wiring creation etc)
+            tmp_creature.GetComponent<Brain>().firstGenerationInit(objective.x, objective.z);
         }
     }
 

@@ -13,19 +13,44 @@ public class Brain : MonoBehaviour
     public InputNeuron[] input_neurons;
     public HiddenNeuron[] hidden_neurons, output_neurons;
 
-    private Vector3 move_vec;
 
     private float x_limit, z_limit;
+    private bool init_executed = false;
+
+    private Vector3 move_vec;
     private CharacterController controller;
 
     public bool debug_var;
 
-
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Unity related methods
 
-    void Start()
+    void Update()
     {
+
+        if(init_executed){
+            // Update input neurons state
+            foreach(InputNeuron tmp_neuron in input_neurons){ tmp_neuron.updateState(); }
+
+            // Update hidden neurons state
+            foreach(HiddenNeuron tmp_neuron in hidden_neurons){ tmp_neuron.updateState(); }
+
+            // Update output neurons state
+            foreach(HiddenNeuron tmp_neuron in output_neurons){ tmp_neuron.updateState(); }
+
+            // Move the creature
+            Move();
+        }
+
+
+        if(debug_var){ Debug(); }
+
+    }
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Init methods during first generation
+
+    public void firstGenerationInit(float objective_x, float objective_z){
         // Inizialization of the genes
         InitGenes(genes_mode_init);
 
@@ -36,7 +61,7 @@ public class Brain : MonoBehaviour
         1 ---> x position
         2 ---> z position
         */
-        InitInputNeurons();
+        InitInputNeurons(objective_x, objective_z);
         n_input_neurons = input_neurons.Length;
 
         // Inizialization of output neurons
@@ -63,28 +88,9 @@ public class Brain : MonoBehaviour
 
         // Colorate the creature
         setCreatureColor();
+
+        init_executed = true;
     }
-
-    void Update()
-    {
-        // Update input neurons state
-        foreach(InputNeuron tmp_neuron in input_neurons){ tmp_neuron.updateState(); }
-
-        // Update hidden neurons state
-        foreach(HiddenNeuron tmp_neuron in hidden_neurons){ tmp_neuron.updateState(); }
-
-        // Update output neurons state
-        foreach(HiddenNeuron tmp_neuron in output_neurons){ tmp_neuron.updateState(); }
-
-        // Move the creature
-        Move();
-
-        if(debug_var){ Debug(); }
-
-    }
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // Init methods during first generation
 
     /*
     Divide the number of genes between links and hidden neurons with the constraint that n_links + n_hidden_neurons = n_genes.
@@ -123,16 +129,20 @@ public class Brain : MonoBehaviour
     /*
     Initializes the input neurons one by one. This is necessary due to the fact that input neurons can have particular inizialization.
     */
-    public void InitInputNeurons(){
+    public void InitInputNeurons(float objective_x, float objective_z){
         input_neurons = new InputNeuron[3];
 
-        ObjectiveNeuron tmp_neuron = new ObjectiveNeuron(0, 0, this.transform);
+        ObjectiveNeuron tmp_neuron = new ObjectiveNeuron(objective_x, objective_z, this.transform);
         // tmp_neuron.setNormalizeState(true);
         input_neurons[0] = tmp_neuron;
 
         input_neurons[1] = new XNeuron(this.transform);
 
         input_neurons[2] = new ZNeuron(this.transform);
+    }
+
+    public void InitInputNeurons(){
+        InitInputNeurons(0f, 0f);
     }
 
     /*
@@ -262,7 +272,7 @@ public class Brain : MonoBehaviour
 
     /*
     Used during the InitWiring that recreate the connections based on a string.
-    Find the tuype of link based on the value of the two index.
+    Find the type of link based on the value of the two index.
     1 ---> Input to hidden
     2 ---> Hidden to output
     3 ---> Hidden to hidden
