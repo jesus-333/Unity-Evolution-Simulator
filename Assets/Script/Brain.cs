@@ -325,6 +325,7 @@ public class Brain : MonoBehaviour
         // Copy Input Neurons
         InitInputNeurons(old_brain.objective.x, old_brain.objective.z);
         this.objective = old_brain.objective;
+        // print(this.objective);
 
         // Copy hidden neurons
         hidden_neurons = new HiddenNeuron[old_brain.hidden_neurons.Length];
