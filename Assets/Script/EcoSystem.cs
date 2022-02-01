@@ -13,6 +13,8 @@ public class EcoSystem : MonoBehaviour
     private float time_copy;
     private Vector3 start_safe_zone, end_safe_zone;
 
+    public bool debug_var = false;
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public void Start(){
@@ -40,14 +42,14 @@ public class EcoSystem : MonoBehaviour
     public void naturalCycle(){
         // Save the number of creatures survived
         creature_survived = countSafe();
+        if(debug_var){
+            print("SAFE Creatures:\t" + creature_survived);
+            print("TOTAL Creatures:\t" + creature_container.transform.childCount + " (Before killing)");
+        }
 
         // Kill all the creatures outside the safe zone
         killOutsideSafeZone();
-
-        // Copy the brains of the survived creatures in new creatures
-        // copySurvived();
-        // Spawn new creatures with random wiring
-        // repopulateV1();
+        if(debug_var){ print("TOTAL Creatures:\t" + creature_container.transform.childCount + " (After killing)");}
 
         // Spawn new creatures with the brains of the survived creatures
         repopulate();
@@ -133,6 +135,10 @@ public class EcoSystem : MonoBehaviour
 
         // Display count of creature inside/outside safe zone
         percentage_safe.text = "IN Safe: " + ((float)countSafe()/(float)(tot_creatures) * 100).ToString() + "%";
+        // percentage_safe.text = "IN Safe: " + (float)countSafe();
+
+        // Display total number of creatures
+        GameObject.Find("Tot Creature Text").GetComponent<Text>().text = "Total: " + creature_container.transform.childCount;
 
     }
 
@@ -165,7 +171,7 @@ public class EcoSystem : MonoBehaviour
     */
     public void repopulate(){
         // Backup array with the brains of the survived creatures
-        Brain[] backup_brains = backupSurvived();
+        Brain[] backup_brains = backupSurvived_V1();
 
         // Spawn new creatures
         GameObject tmp_creatures_container = new GameObject();
@@ -186,32 +192,50 @@ public class EcoSystem : MonoBehaviour
         killAllCreatures();
 
         // Move new creatures inside the normal container
-        foreach(Transform creature in tmp_creatures_container.transform){creature.transform.parent = GameObject.Find("Creature Container").transform;}
+        // foreach(Transform creature in tmp_creatures_container.transform){creature.transform.parent = GameObject.Find("Creature Container").transform; }
+        for(int i = 0; i < tmp_creatures_container.transform.childCount; i++){
+            tmp_creatures_container.transform.GetChild(i).transform.parent = GameObject.Find("Creature Container").transform;
+        }
+
 
         // // Destroy temporary container
         Destroy(tmp_creatures_container);
     }
 
-    /*Simple "decorator" to call more simply the function that spawn creatures*/
-    // public void spawnCreature(int n_creature){
-    //     GameObject.Find("Script Container").GetComponent<Spawn>().spawnCreature(n_creature);
-    // }
 
-    /*
-    Spawn new creatures with random brains. The number of new creatures is the number of creatures killed.
-    */
-    // public void repopulateV1(){
-    //     int n_new_creature = tot_creatures - creature_survived;
-    //     spawnCreature(n_new_creature);
-    // }
-
-    public Brain[] backupSurvived(){
+    public Brain[] backupSurvived_V1(){
         Brain[] backup_brains = new Brain[creature_survived];
         for(int i = 0; i < creature_survived; i++){
             backup_brains[i] = creature_container.transform.GetChild(i).gameObject.GetComponent<Brain>();
         }
 
         return backup_brains;
+    }
+
+    public Brain[] backupSurvived_V2(){
+        Brain tmp_brain;
+        List<Brain> backup_brains_list = new List<Brain>();
+        List<string> backup_wired_string = new List<string>();
+
+        // Cycled through survived creatures
+        for(int i = 0; i < creature_survived; i++){
+            // Extract brain of the current creatures
+            tmp_brain = creature_container.transform.GetChild(i).gameObject.GetComponent<Brain>();
+
+            // Check if I have already done a backup of an identical brain in another creatures
+            print(i + " " + !backup_wired_string.Contains(tmp_brain.brain_wiring) + " " + tmp_brain.brain_wiring);
+            if(!backup_wired_string.Contains(tmp_brain.brain_wiring)){
+                // If it is unique add the brain to the list
+                backup_brains_list.Add(tmp_brain);
+                backup_wired_string.Add(tmp_brain.brain_wiring);
+            }
+
+        }
+
+        print("creature_survived  =\t" + creature_survived);
+        print("backup_brains_list =\t" + backup_brains_list.Count);
+        print("backup_wired_string =\t" + backup_wired_string.Count);
+        return backup_brains_list.ToArray();
     }
 
 

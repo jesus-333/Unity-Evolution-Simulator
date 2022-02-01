@@ -42,6 +42,8 @@ public class Spawn : MonoBehaviour
 
             // Invoke init methods for the creatures (neurons creation, wiring creation etc)
             tmp_creature.GetComponent<Brain>().firstGenerationInit(objective);
+
+            tmp_creature.transform.name = "" + i;
         }
     }
 
