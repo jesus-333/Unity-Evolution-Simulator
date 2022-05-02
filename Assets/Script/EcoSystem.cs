@@ -19,6 +19,7 @@ public class EcoSystem : MonoBehaviour
 
     public void Start(){
         retrieveInformation();
+        if(debug_var){ print("START - tot_creatures = " + tot_creatures); }
 
         time_copy = time_in_seconds;
     }
@@ -52,7 +53,10 @@ public class EcoSystem : MonoBehaviour
         if(debug_var){ print("TOTAL Creatures:\t" + creature_container.transform.childCount + " (After killing)");}
 
         // Spawn new creatures with the brains of the survived creatures
+        if(debug_var){ print("START REPOPULATION"); }
         repopulate();
+        if(debug_var){ print("END REPOPULATION"); }
+        // if(debug_var){ print("TOTAL Creatures:\t" + creature_container.transform.childCount + " (After repopulation)");}
 
         // Reset the timer
         time_in_seconds = time_copy;
@@ -139,7 +143,6 @@ public class EcoSystem : MonoBehaviour
 
         // Display total number of creatures
         GameObject.Find("Tot Creature Text").GetComponent<Text>().text = "Total: " + creature_container.transform.childCount;
-
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -152,6 +155,7 @@ public class EcoSystem : MonoBehaviour
         for(int i = 0; i < creature_container.transform.childCount; i++){
             if(!checkIfInsideSafeZone(creature_container.transform.GetChild(i).position)){
                 Destroy(creature_container.transform.GetChild(i).gameObject);
+                // if(debug_var){ print("\t Child " + i + " killed"); }
             }
         }
     }
@@ -172,6 +176,7 @@ public class EcoSystem : MonoBehaviour
     public void repopulate(){
         // Backup array with the brains of the survived creatures
         Brain[] backup_brains = backupSurvived_V1();
+        if(debug_var){ print("\tREPOPULATION: N. of backup brain: " + backup_brains.Length);}
 
         // Spawn new creatures
         GameObject tmp_creatures_container = new GameObject();
@@ -190,10 +195,13 @@ public class EcoSystem : MonoBehaviour
 
         // Kill the original survived creatures
         killAllCreatures();
+        if(debug_var){ print("\tREPOPULATION: TOTAL Creatures:\t" + creature_container.transform.childCount + " (creature_container)");}
+        if(debug_var){ print("\tREPOPULATION: TOTAL Creatures:\t" + creature_container.transform.childCount + " (tmp_creatures_container)");}
 
         // Move new creatures inside the normal container
         // foreach(Transform creature in tmp_creatures_container.transform){creature.transform.parent = GameObject.Find("Creature Container").transform; }
-        for(int i = 0; i < tmp_creatures_container.transform.childCount; i++){
+        int tmp_creature_to_move = tmp_creatures_container.transform.childCount;
+        for(int i = tmp_creature_to_move - 1; i >= 0 ; i--){
             tmp_creatures_container.transform.GetChild(i).transform.parent = GameObject.Find("Creature Container").transform;
         }
 
