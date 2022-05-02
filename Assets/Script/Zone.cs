@@ -1,6 +1,11 @@
+// Default when a new unity script is created
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+// Used to save the zone
+using System.IO;
+using System.Text.RegularExpressions;
 
 public class Zone : MonoBehaviour
 {
@@ -8,6 +13,8 @@ public class Zone : MonoBehaviour
     public int field_side = 50;
 
     public GameObject border_prefab, angle_prefab, grass_field_prefab;
+
+    // N.b. start_position = Upper left angle and end_position = lower right angle
     public Vector3 start_position, end_position;
 
     void Start()
@@ -82,5 +89,58 @@ public class Zone : MonoBehaviour
         angle_3.transform.name = "Angle 3";
         angle_4.transform.name = "Angle 4";
 
+    }
+
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    // Methods related to save/load zones position
+
+    /*
+    Save the current zone in a text files.
+    The method read all the previous saved position and if the current location is not present it is saved.
+    Each position is saved in 3 lines: the first for the start position, the second for the end position and the last empty to allow easy reading of the file
+    */
+    public void saveZone(){
+        // Read previous saved zone
+        string previous_saved_zone, start_position_string = "", end_position_string = "";
+        using(StreamReader readtext = new StreamReader("Data/zone.txt")){
+            previous_saved_zone = readtext.ReadToEnd();
+        }
+
+        using(StreamWriter writetext = new StreamWriter("Data/zone.txt")){
+            start_position_string = start_position.x + " " + start_position.y + " " + start_position.z;
+            end_position_string = end_position.x + " " + end_position.y + " " + end_position.z;
+
+            if(checkIfAlreadySaved(start_position_string, end_position_string, previous_saved_zone)){
+                // If present only notify that the current zone is already saved
+                print("Position already saved");
+            } else {
+                // If not present add and save the current zone
+                previous_saved_zone = previous_saved_zone + start_position_string + "\n" + end_position_string + "\n";
+                print("New zone saved");
+            }
+
+            // Clean the string and saved it
+            previous_saved_zone = Regex.Replace(previous_saved_zone, @"^\s+$[\r\n]*", string.Empty, RegexOptions.Multiline);
+            writetext.WriteLine(previous_saved_zone);
+        }
+    }
+
+    /*
+    Check if the positon defined by the start_position_string and end_position_string is 'present in previous_saved_zone
+    */
+    private bool checkIfAlreadySaved(string start_position_string, string end_position_string, string previous_saved_zone){
+        string[] previous_zone_split_by_line = previous_saved_zone.Split("\n");
+
+        for(int i = 0; i < previous_zone_split_by_line.Length; i = i + 3){ //Each position is saved in 3 line
+            if(previous_zone_split_by_line[i].Equals(start_position_string)){ // Check the start position
+                if(previous_zone_split_by_line[i + 1].Equals(end_position_string)){ // Check the end position
+                    //If both start and end position are presents sequentially this means that I already have saved this position
+                    return true;
+                }
+            }
+        }
+
+        // If arrive here it means that has not found the current position
+        return false;
     }
 }

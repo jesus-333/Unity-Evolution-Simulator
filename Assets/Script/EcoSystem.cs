@@ -14,8 +14,10 @@ public class EcoSystem : MonoBehaviour
     private Vector3 start_safe_zone, end_safe_zone;
 
     public bool debug_var = false;
+    [Range(0.0f, 10.0f)]
+    public float time_speed = 1.0f;
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
     public void Start(){
         retrieveInformation();
@@ -35,9 +37,16 @@ public class EcoSystem : MonoBehaviour
 
         displayInfo();
 
+        //  - - - - - - - - - - - - -
+        // Stuff for debug
+
+        // Force the natural cycle when R is pressed
         if (Input.GetKeyDown(KeyCode.R)){
             naturalCycle();
         }
+
+        // Change game speed
+        Time.timeScale = time_speed;
     }
 
     public void naturalCycle(){
@@ -62,7 +71,7 @@ public class EcoSystem : MonoBehaviour
         time_in_seconds = time_copy;
     }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
     public void retrieveInformation(){
         // Safe zone limits
@@ -73,7 +82,7 @@ public class EcoSystem : MonoBehaviour
         tot_creatures = GameObject.Find("Script Container").GetComponent<Spawn>().n_creature;
     }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     // Methods related to display information
 
     // Convert time in minutes:seconds format.
@@ -143,9 +152,13 @@ public class EcoSystem : MonoBehaviour
 
         // Display total number of creatures
         GameObject.Find("Tot Creature Text").GetComponent<Text>().text = "Total: " + creature_container.transform.childCount;
+
+        // Display the time speed
+        time_speed = GameObject.Find("Time Speed Slider").GetComponent<Slider>().value;
+        GameObject.Find("Time Speed Text").GetComponent<Text>().text = time_speed + "";
     }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     // Methods related to natural selection
 
     /*
@@ -247,5 +260,5 @@ public class EcoSystem : MonoBehaviour
     }
 
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 }
