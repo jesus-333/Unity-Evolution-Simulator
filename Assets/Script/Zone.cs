@@ -20,7 +20,7 @@ public class Zone : MonoBehaviour
 
     void Start(){
         // Eventualy correct the coordinate
-        checkPosition();
+        checkZoneCoordinates();
 
         // Create terrain
         createGrassField(field_side);
@@ -33,7 +33,7 @@ public class Zone : MonoBehaviour
     This function check the start and end position.
     It change the two vectors in order to have start position in the upper left angle and end position in the lower right angle
     */
-    void checkPosition(){
+    void checkZoneCoordinates(){
         // Check x coordinate
         float lower_x, higher_x;
 
@@ -144,7 +144,7 @@ public class Zone : MonoBehaviour
     */
     public void saveZone(){
         // Eventualy correct the coordinate
-        checkPosition();
+        checkZoneCoordinates();
 
         // Read previous saved zone
         string previous_saved_zone, start_position_string = "", end_position_string = "";

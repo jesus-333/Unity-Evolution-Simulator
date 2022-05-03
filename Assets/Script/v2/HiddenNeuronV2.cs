@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HiddenNeuron {
+public class HiddenNeuronV2{
 
     public float state = 0.5f, min_weight = -1f, max_weight = 1f; //P.S. I know... I should have used private variable with getters and setters... but for now it is faster this way
     public float[] back_connection_input_weights, back_connection_hidden_weights;
@@ -13,11 +13,11 @@ public class HiddenNeuron {
     public List<InputNeuron> back_connected_input_neurons;
     public List<HiddenNeuron> back_connected_hidden_neurons;
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     // Constructor methods
 
     // Initializes the state of the neuron with given value
-    public HiddenNeuron(float state) {
+    public HiddenNeuronV2(float state) {
         this.state = state;
 
         this.back_connected_input_neurons = new List<InputNeuron>();
@@ -25,16 +25,28 @@ public class HiddenNeuron {
     }
 
     // Initializes the state of the neuron with random value
-    public HiddenNeuron() : this(UnityEngine.Random.Range(-1f, 1f)) {}
+    public HiddenNeuronV2() : this(UnityEngine.Random.Range(-1f, 1f)) {}
 
-    public HiddenNeuron(HiddenNeuron old_neuron){
+    // Initializes the new neuron taking the value of the old neuron
+    public HiddenNeuronV2(HiddenNeuron old_neuron){
         // Copy old state
         this.state = old_neuron.state;
 
-        // Copy connections
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // Copy input neuron connected to this hidden neuron
         this.back_connected_input_neurons = new List<InputNeuron>(old_neuron.back_connected_input_neurons);
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // Copy other hidden neuron connected to the this hidden neuron
         this.back_connected_hidden_neurons = new List<HiddenNeuron>(old_neuron.back_connected_hidden_neurons);
 
+        // Bugged
+        // back_connected_hidden_neurons = new List<HiddenNeuron>(old_neuron.back_connected_hidden_neurons.Count);
+        // foreach(HiddenNeuron connected_neuron in old_neuron.back_connected_hidden_neurons){
+        //     back_connected_hidden_neurons.Add(new HiddenNeuron(connected_neuron));
+        // }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Copy weights
         if(old_neuron.back_connection_input_weights != null){
             this.back_connection_input_weights = new float[back_connected_input_neurons.Count];
@@ -46,11 +58,11 @@ public class HiddenNeuron {
          }
     }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     // Setter methods (TODO in future)
 
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
     /*
     Randomly assing different weight to each connection
