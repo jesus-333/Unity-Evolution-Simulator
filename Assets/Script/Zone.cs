@@ -15,14 +15,57 @@ public class Zone : MonoBehaviour
     public GameObject border_prefab, angle_prefab, grass_field_prefab;
 
     // N.b. start_position = Upper left angle and end_position = lower right angle
+    // The plane is the x-z plane
     public Vector3 start_position, end_position;
 
-    void Start()
-    {
+    void Start(){
+        // Eventualy correct the coordinate
+        checkPosition();
+
+        // Create terrain
         createGrassField(field_side);
 
+        // Create boundaries
         drawSafeZone(start_position, end_position);
     }
+
+    /*
+    This function check the start and end position.
+    It change the two vectors in order to have start position in the upper left angle and end position in the lower right angle
+    */
+    void checkPosition(){
+        // Check x coordinate
+        float lower_x, higher_x;
+
+        if(start_position.x > end_position.x){
+            lower_x = end_position.x;
+            higher_x = start_position.x;
+        } else {
+            lower_x = start_position.x;
+            higher_x = end_position.x;
+        }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // Check z coordinate
+        float lower_z, higher_z;
+
+        if(start_position.z > end_position.z){
+            lower_z = end_position.z;
+            higher_z = start_position.z;
+        } else {
+            lower_z = start_position.z;
+            higher_z = end_position.z;
+        }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // Create start and end position in order to have upper left angle and lower right angle
+
+        start_position = new Vector3(lower_x, 0f, higher_z);
+        end_position = new Vector3(higher_x, 0f, lower_z);
+    }
+
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    // Methods related to draw stuff
 
     void createGrassField(int field_side){
         // Create empty GameObject to contain the grass tiles
@@ -100,6 +143,9 @@ public class Zone : MonoBehaviour
     Each position is saved in 3 lines: the first for the start position, the second for the end position and the last empty to allow easy reading of the file
     */
     public void saveZone(){
+        // Eventualy correct the coordinate
+        checkPosition();
+
         // Read previous saved zone
         string previous_saved_zone, start_position_string = "", end_position_string = "";
         using(StreamReader readtext = new StreamReader("Data/zone.txt")){
