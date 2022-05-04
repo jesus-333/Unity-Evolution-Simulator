@@ -8,6 +8,8 @@ public class HiddenNeuronV2{
     public float state = 0.5f, min_weight = -1f, max_weight = 1f; //P.S. I know... I should have used private variable with getters and setters... but for now it is faster this way
     public float[] back_connection_input_weights, back_connection_hidden_weights;
 
+    public string id = "";
+
     // public InputNeuron[] back_connected_input_neurons;
     // public HiddenNeuron[] back_connected_hidden_neurons;
     public List<InputNeuron> back_connected_input_neurons;
@@ -22,6 +24,8 @@ public class HiddenNeuronV2{
 
         this.back_connected_input_neurons = new List<InputNeuron>();
         this.back_connected_hidden_neurons = new List<HiddenNeuron>();
+
+        this.id = SupportMethods.generateRandomString(10);
     }
 
     // Initializes the state of the neuron with random value

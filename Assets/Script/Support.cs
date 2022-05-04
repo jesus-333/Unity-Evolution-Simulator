@@ -122,4 +122,24 @@ public static class SupportMethods{
             Console.WriteLine(descriptor.Name);
         }
     }
+
+    public static string generateRandomString(int str_length){
+        string random_str = "";
+        float tmp_char = 0f, type_of_char = 0f;
+
+        for(int i = 0; i < str_length; i++){ // Generate upper case letter
+            type_of_char = UnityEngine.Random.Range(0, 1f);
+            if(type_of_char % 3 == 0){
+                tmp_char = (int)UnityEngine.Random.Range(65f, 90f);
+            } else if(type_of_char % 3 == 1) { // Generate lower case letter
+                tmp_char = (int)UnityEngine.Random.Range(97f, 122f);
+            } else { // Generate a number
+                tmp_char = (int)UnityEngine.Random.Range(0f, 9f);
+            }
+
+            random_str += (char)tmp_char;
+        }
+
+        return random_str;
+    }
 }

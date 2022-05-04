@@ -9,6 +9,7 @@ public abstract class InputNeuron {
 
     public float state = 0.5f;
     public bool random_init = false;
+    public string id = "";
 
     // public Neuron[] front_connected_neuron;
 
@@ -46,6 +47,8 @@ public class ObjectiveNeuron: InputNeuron {
         this.objective = null;
 
         this.my_position = my_position;
+
+        this.id = SupportMethods.generateRandomString(10);
     }
 
     public ObjectiveNeuron(GameObject objective, Transform my_position) {
@@ -77,6 +80,8 @@ public class XNeuron: InputNeuron{
 
     public XNeuron(Transform my_position) {
         this.my_position = my_position;
+
+        this.id = SupportMethods.generateRandomString(10);
     }
 
     public override void updateState(){
@@ -92,6 +97,8 @@ public class ZNeuron: InputNeuron{
 
     public ZNeuron(Transform my_position) {
         this.my_position = my_position;
+
+        this.id = SupportMethods.generateRandomString(10);
     }
 
     public override void updateState(){
