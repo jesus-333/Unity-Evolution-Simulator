@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Brain : MonoBehaviour
 {
-    public int n_genes = 8, genes_mode_init = 2;
+    public int n_genes = 10, genes_mode_init = 2;
     public int n_links = 0, n_hidden_neurons = 0, n_input_neurons = 0, n_output_neurons = 0;
     public float speed = 4f;
 
@@ -50,7 +50,7 @@ public class Brain : MonoBehaviour
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     // Init methods during first generation
 
-    public void firstGenerationInit(Vector3 objective){
+    public void FirstGenerationInit(Vector3 objective){
         // Inizialization of the genes
         InitGenes(genes_mode_init);
 

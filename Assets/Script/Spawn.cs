@@ -41,7 +41,7 @@ public class Spawn : MonoBehaviour
             tmp_creature = Instantiate(creature_prefab, random_position, Quaternion.identity, creature_container.transform);
 
             // Invoke init methods for the creatures (neurons creation, wiring creation etc)
-            tmp_creature.GetComponent<Brain>().firstGenerationInit(objective);
+            tmp_creature.GetComponent<Brain>().FirstGenerationInit(objective);
 
             tmp_creature.transform.name = "" + i;
         }
