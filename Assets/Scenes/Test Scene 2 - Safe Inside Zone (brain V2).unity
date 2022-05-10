@@ -190,7 +190,7 @@ MonoBehaviour:
   n_creature: 200
   x_limit: 45
   z_limit: 45
-  creature_prefab: {fileID: 6054791350023603013, guid: 7853632f4f7c39f4998ce4595f53f2cb, type: 3}
+  creature_prefab: {fileID: 6054791350023603013, guid: f3b0ffe2507b7dcf29c044bc4db42317, type: 3}
   food_prefab: {fileID: 100000, guid: 47365cc78e5cfad41badc534e3d2b7e1, type: 3}
   creature_container: {fileID: 745760153}
   food_container: {fileID: 65817205}

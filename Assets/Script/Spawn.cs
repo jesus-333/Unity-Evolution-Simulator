@@ -41,7 +41,14 @@ public class Spawn : MonoBehaviour
             tmp_creature = Instantiate(creature_prefab, random_position, Quaternion.identity, creature_container.transform);
 
             // Invoke init methods for the creatures (neurons creation, wiring creation etc)
-            tmp_creature.GetComponent<Brain>().FirstGenerationInit(objective);
+            if(creature_prefab.transform.name[creature_prefab.transform.name.Length - 1] == '1'){
+                tmp_creature.GetComponent<Brain>().FirstGenerationInit(objective);
+            } else if(creature_prefab.transform.name[creature_prefab.transform.name.Length - 1] == '2'){
+                tmp_creature.GetComponent<BrainV2>().FirstGenerationInit(objective);
+            } else {
+                print("ERROR with brain assigned to creature");
+            }
+
 
             tmp_creature.transform.name = "" + i;
         }

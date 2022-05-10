@@ -142,4 +142,18 @@ public static class SupportMethods{
 
         return random_str;
     }
+
+    // Create a 2d array with specified dimension and fill it with random value
+    public static float[,] fill2dArray(int n_rows, int n_cols, float min_value = 1f, float max_value = 1f){
+        // Create the 2d Array
+        float tmp_mat = new float[n_rows, n_cols];
+
+        for(int i = 0; i < n_rows; i++){
+            for(int j = 0; j < n_cols; j++){
+                tmp_mat[i, j] = UnityEngine.Random.Range(min_value, max_value);
+            }
+        }
+
+        return tmp_mat;
+    }
 }
